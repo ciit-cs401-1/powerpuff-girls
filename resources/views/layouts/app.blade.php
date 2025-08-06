@@ -27,7 +27,6 @@
             <ul class="flex items-center gap-x-10 text-sm font-medium">
                 <li><a href="{{ url('/') }}" class="hover:underline">Home</a></li>
                 <li><a href="{{ url('/devlog') }}" class="hover:underline">Devlog</a></li>
-                <li><a href="{{ url('/donation') }}" class="hover:underline">Donation</a></li>
             </ul>
             <div>
                 <img src="{{ asset('assets/logo_furs.png') }}" alt="Logo" class="h-10">
