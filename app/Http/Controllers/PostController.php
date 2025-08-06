@@ -39,6 +39,11 @@ public function devlog() {
     return redirect()->route('home')->with('success', 'Post created successfully!');
 }
 
+public function show(Post $post)
+{
+    return view('posts.show', compact('post'));
+}
+
     public function edit(Post $post)
     {
         return view('editpost', compact('post'));
