@@ -49,9 +49,15 @@ class PostFactory extends Factory
             ? ucfirst("{$article} {$adjective} and possibly {$condition} {$animal} {$situation}. Locals are encouraged to offer help and contact shelters.")
             : ucfirst("{$article} {$adjective} {$animal} {$situation}. If this is your pet, please check the area or post about it in your local group.");
 
+        $postTypes = ['blog', 'devlog', 'home'];
+        $postType = $this->faker->randomElement($postTypes);
+
         return [
             'title' => $title,
             'content' => $content,
+            'post_type' => $postType,
             'created_at' => Carbon::now('Asia/Manila'),
             'updated_at' => Carbon::now('Asia/Manila'),
+        ];
+    }
 }
