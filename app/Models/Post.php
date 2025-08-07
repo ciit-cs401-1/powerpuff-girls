@@ -10,6 +10,15 @@ class Post extends Model
 {
     use HasFactory;
 
-   protected $fillable = ['title', 'content', 'post_type'];
+    protected $fillable = ['title', 'content', 'post_type'];
 
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class)->latest();
+    }
 }

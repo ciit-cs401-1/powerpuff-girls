@@ -7,17 +7,19 @@ use App\Models\Post;
 
 class PostController extends Controller
 {
-public function index() {
-    // Show only 'home' posts on homepage
-    $posts = Post::where('post_type', 'home')->latest()->get();
-    return view('home', compact('posts'));
-}
+    public function index()
+    {
+        // Show only 'home' posts on homepage
+        $posts = Post::where('post_type', 'home')->latest()->get();
+        return view('home', compact('posts'));
+    }
 
-public function devlog() {
-    // Show only 'devlog' posts on devlog page
-    $posts = Post::where('post_type', 'devlog')->latest()->get();
-    return view('devlog', compact('posts'));
-}
+    public function devlog()
+    {
+        // Show only 'devlog' posts on devlog page
+        $posts = Post::where('post_type', 'devlog')->latest()->get();
+        return view('devlog', compact('posts'));
+    }
 
     // Show add post form
     public function create()
@@ -26,23 +28,23 @@ public function devlog() {
     }
 
     // Handle post creation
-   public function store(Request $request)
-{
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'content' => 'required|string',
-        'post_type' => 'required|in:home,devlog', // validate the dropdown
-    ]);
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'post_type' => 'required|in:home,devlog', // validate the dropdown
+        ]);
 
-    Post::create($validated); // saves title, content, and post_type
+        Post::create($validated); // saves title, content, and post_type
 
-    return redirect()->route('home')->with('success', 'Post created successfully!');
-}
+        return redirect()->route('home')->with('success', 'Post created successfully!');
+    }
 
-public function show(Post $post)
-{
-    return view('posts.show', compact('post'));
-}
+    public function show(Post $post)
+    {
+        return view('posts.show', compact('post'));
+    }
 
     public function edit(Post $post)
     {
@@ -68,5 +70,42 @@ public function show(Post $post)
         $post->delete();
 
         return redirect()->route('home')->with('success', 'Post deleted successfully!');
+    }
+
+    public function likes(Post $post)
+    {
+        return response()->json(['likes' => $post->likes()->count()]);
+    }
+
+    public function like(Request $request, Post $post)
+    {
+        $ip = $request->ip();
+
+        $existing = $post->likes()->where('ip_address', $ip)->first();
+        if (!$existing) {
+            $post->likes()->create(['ip_address' => $ip]);
+        }
+
+        return response()->json(['likes' => $post->likes()->count()]);
+    }
+
+    public function comments(Post $post)
+    {
+        return response()->json($post->comments()->latest()->get());
+    }
+
+    public function addComment(Request $request, Post $post)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'body' => 'required|string|max:1000',
+        ]);
+
+        $comment = $post->comments()->create([
+            'name' => $request->name,
+            'body' => $request->body,
+        ]);
+
+        return response()->json($comment);
     }
 }
